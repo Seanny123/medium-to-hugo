@@ -18,29 +18,27 @@ def process_content(content, fil_title: str, all_posts: List[str]) -> List[str]:
     skipped_title = False
     out_lines = []
 
-    for cont in content.children:
+    for section in content:
         # classify the content as title, text or image
 
-        if cont.name == "h3":
+        if section.name == "h3":
             if not skipped_title:
                 skipped_title = True
                 continue
             else:
-                out_lines.append("## %s" % cont.text)
+                out_lines.append("## %s" % section.text)
 
-        elif cont.name == "figure":
-            print("Figure!")
-            embed = cont.find("iframe")
+        elif section.name == "figure":
+            embed = section.find("iframe")
             if embed is None:
-                print("Image!")
-                out_lines.append(process_img(cont, img_count, fil_title, all_posts))
+                out_lines.append(process_img(section, img_count, fil_title, all_posts))
                 img_count += 1
 
             else:
                 out_lines.append(str(embed))
 
         else:
-            out_lines.append(process_text(str(cont), all_posts))
+            out_lines.append(process_text(str(section), all_posts))
 
         out_lines.append("\n")
 
@@ -56,7 +54,6 @@ def process_img(c_val, count: int, fil_title: str, all_posts: List[str], downloa
     img_path = os.path.join(export_dir, "img",
                             "%s_%s%s" % (fil_title, count, ext))
     if download:
-        print("Downloading!")
         web_get(src, img_path)
 
     caption_tag = c_val.find("figcaption")
