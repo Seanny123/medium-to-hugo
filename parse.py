@@ -26,6 +26,7 @@ if __name__ == "__main__":
         all_cont_args.append(cont_args)
         all_paths.append(path)
 
+    # TODO: run this in parallel
     for cont_args in all_cont_args:
         all_output = []
         print("Processing: ", cont_args[1])

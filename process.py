@@ -45,7 +45,7 @@ def process_content(content, fil_title: str, all_posts: List[str]) -> List[str]:
     return out_lines
 
 
-def process_img(c_val, count: int, fil_title: str, all_posts: List[str], download=True) -> str:
+def process_img(c_val, count: int, fil_title: str, all_posts: List[str], download=False) -> str:
     """Acquire image from Medium server and insert link,
     as well as processing the caption."""
 
@@ -63,8 +63,7 @@ def process_img(c_val, count: int, fil_title: str, all_posts: List[str], downloa
         cap_out = process_text(caption_tag, all_posts)
         caption = "".join(cap_out)
 
-    return r"""
-{{< figure
+    return """{{< figure
   src="%s"
   class=""
   title=""
@@ -75,7 +74,7 @@ def process_img(c_val, count: int, fil_title: str, all_posts: List[str], downloa
   alt=""
   link=""
  >}}
-{{< section "end" >}}""" % (img_path, caption)
+{{< section "end" >}}\n""" % (img_path, caption)
 
 
 def process_text(text: str, all_posts: List[str]):
