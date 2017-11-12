@@ -1,5 +1,6 @@
 from regexes import title_re, date_re, orig_re
 from utils import web_get
+from config import export_dir
 
 import bs4
 from bs4 import BeautifulSoup
@@ -42,17 +43,16 @@ def process_header(fi_path: str):
 
     soup = BeautifulSoup(in_fi_text, "html.parser")
 
-    title = soup.html.title.text.replace(":", "&colon;")
+    title = soup.html.title.text
 
     if write_dir != "replies":
         tags = get_tags(soup)
 
-        out_lines.append("\n".join(("+++",
-                                    "layout: post",
-                                    "title: %s" % title,
-                                    "date: %s" % pub_date,
-                                    "categories: %s" % ", ".join(tags),
-                                    "+++")))
+        out_lines.append("\n".join(('+++',
+                                    'title = "%s"' % title,
+                                    'date = "%s"' % pub_date,
+                                    'categories = ["%s"]' % '", "'.join(tags),
+                                    '+++')))
         out_lines.append("\n\n")
 
     pre_body = soup.findAll("section", {"data-field": "body"})
@@ -66,7 +66,7 @@ def process_header(fi_path: str):
 
 def get_write_dir(fil_title: str, in_fi_text: str, download=True) -> Tuple[str, bs4.element.Tag]:
     orig_url = orig_re.search(in_fi_text).group(0)
-    orig_fi = os.path.join(".", "tmp-download", "%s.html" % fil_title)
+    orig_fi = os.path.join(export_dir, "tmp-download", "%s.html" % fil_title)
     if download:
         web_get(orig_url, orig_fi)
 
