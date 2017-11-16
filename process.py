@@ -36,6 +36,7 @@ def process_content(content, fil_title: str, all_posts: List[str]) -> List[str]:
 
             else:
                 out_lines.append(str(embed))
+                out_lines.append("\n")
 
         else:
             out_lines.append(process_text(str(section), all_posts))
@@ -51,8 +52,8 @@ def process_img(c_val, count: int, fil_title: str, all_posts: List[str], downloa
 
     src = c_val.find("img")["src"]
     ext = os.path.splitext(src)[1]
-    img_path = os.path.join(export_dir, "img",
-                            "%s_%s%s" % (fil_title, count, ext))
+    img_dir = os.path.join(os.sep, "img", "%s_%s%s" % (fil_title, count, ext))
+    img_path = os.path.join(export_dir, img_dir)
     if download:
         web_get(src, img_path)
 
@@ -61,7 +62,7 @@ def process_img(c_val, count: int, fil_title: str, all_posts: List[str], downloa
         caption = ""
     else:
         cap_out = process_text(caption_tag, all_posts)
-        caption = "".join(cap_out)
+        caption = "".join(cap_out).rstrip()
 
     return """{{< figure
   src="%s"
